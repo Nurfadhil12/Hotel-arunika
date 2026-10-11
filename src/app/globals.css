@@ -56,6 +56,11 @@ img {
   max-width: 100%;
 }
 
+/* Navbar fixed setinggi 68px — beri jarak saat melompat ke section lewat #anchor. */
+section[id] {
+  scroll-margin-top: 5.5rem;
+}
+
 /* -------------------------------- utilities ------------------------------- */
 .eyebrow {
   display: inline-flex;

@@ -9,8 +9,8 @@ export default function NotFound() {
         Halaman ini tidak ada
       </h1>
       <p className="mt-6 max-w-md text-[0.95rem] leading-relaxed text-stone">
-        Mungkin tautannya berubah. Kembali ke beranda, atau langsung lihat tipe
-        kamar dan fasilitas kami.
+        Situs ini hanya satu halaman. Kembali ke atas, atau langsung menuju
+        bagian kamar dan kontak.
       </p>
       <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
         <Link
@@ -18,10 +18,10 @@ export default function NotFound() {
           className="inline-flex items-center gap-2 rounded-full bg-jade px-7 py-3.5 text-[0.7rem] uppercase tracking-[0.22em] text-sand transition-colors hover:bg-forest"
         >
           <Icon name="arrow-right" className="h-4 w-4 rotate-180" />
-          Beranda
+          Ke beranda
         </Link>
         <Link
-          href="/kamar"
+          href="/#kamar"
           className="inline-flex items-center gap-2 rounded-full border border-line px-7 py-3.5 text-[0.7rem] uppercase tracking-[0.22em] text-ink transition-colors hover:border-jade hover:text-jade"
         >
           Lihat kamar

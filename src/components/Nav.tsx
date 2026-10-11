@@ -1,22 +1,44 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Icon } from "@/components/Icon";
 import { hotel, navLinks } from "@/data/hotel";
 
 export function Nav() {
-  const pathname = usePathname();
-  const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(navLinks[0].href);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Sorot menu yang sedang terlihat: bagian yang melewati tengah viewport jadi aktif.
+  useEffect(() => {
+    const sections = navLinks
+      .map((link) => document.getElementById(link.href.slice(1)))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (!sections.length || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort(
+            (a, b) => a.boundingClientRect.top - b.boundingClientRect.top,
+          );
+        if (visible[0]) setActive(`#${visible[0].target.id}`);
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: 0 },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -26,26 +48,27 @@ export function Nav() {
     };
   }, [open]);
 
-  const overlay = (isHome && !scrolled) || open;
+  const overlay = !scrolled || open;
 
   return (
     <>
       <header
         className={[
           "fixed inset-x-0 top-0 z-50 transition-all duration-500",
-          scrolled || !isHome
+          scrolled && !open
             ? "border-b border-line/80 bg-sand shadow-[0_1px_24px_-14px_rgba(15,21,18,0.45)]"
             : "border-b border-transparent bg-gradient-to-b from-black/55 to-transparent",
         ].join(" ")}
       >
         <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between gap-6 px-5 sm:px-8">
           <Link
-            href="/"
+            href="#beranda"
+            onClick={() => setActive("#beranda")}
             className={[
               "flex items-center gap-3 transition-colors",
               overlay ? "text-sand" : "text-ink",
             ].join(" ")}
-            aria-label={`${hotel.name} — beranda`}
+            aria-label={`${hotel.name} — ke atas halaman`}
           >
             <span
               className={[
@@ -72,19 +95,20 @@ export function Nav() {
 
           <nav className="hidden items-center gap-8 lg:flex">
             {navLinks.map((link) => {
-              const active =
-                link.href === "/"
-                  ? pathname === "/"
-                  : pathname.startsWith(link.href);
+              const isActive = active === link.href;
               return (
                 <Link
                   key={link.href}
                   href={link.href}
+                  aria-current={isActive ? "true" : undefined}
+                  onClick={() => setActive(link.href)}
                   className={[
                     "link-underline text-[0.78rem] uppercase tracking-[0.2em] transition-colors",
                     overlay
-                      ? "text-sand/90 hover:text-sand"
-                      : active
+                      ? isActive
+                        ? "text-brass-soft"
+                        : "text-sand/90 hover:text-sand"
+                      : isActive
                         ? "text-brass"
                         : "text-ink/80 hover:text-ink",
                   ].join(" ")}
@@ -107,7 +131,8 @@ export function Nav() {
               {hotel.phoneDisplay}
             </a>
             <Link
-              href="/kontak"
+              href="#kontak"
+              onClick={() => setActive("#kontak")}
               className={[
                 "hidden rounded-full px-5 py-2.5 text-[0.72rem] uppercase tracking-[0.22em] transition-colors sm:inline-flex",
                 overlay
@@ -150,7 +175,10 @@ export function Nav() {
               <Link
                 key={link.href}
                 href={link.href}
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setActive(link.href);
+                  setOpen(false);
+                }}
                 className="title-display border-b border-sand/15 py-4 text-3xl"
                 style={{
                   transition: "opacity .4s ease, transform .4s ease",

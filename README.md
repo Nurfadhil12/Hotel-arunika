@@ -18,18 +18,30 @@ npm run lint       # ESLint (config Next)
 npx tsc --noEmit   # cek tipe
 ```
 
-## Halaman
+## Situs satu halaman
 
-| Rute | Isi |
-|---|---|
-| `/` | Hero layar penuh, statistik, tentang, 3 kamar favorit, fasilitas, galeri, testimoni, CTA |
-| `/kamar` | 5 tipe kamar dengan detail, fasilitas, harga, tombol pesan per kamar |
-| `/fasilitas` | 8 fasilitas utama, 4 di antaranya dibahas bergantian gambar/teks |
-| `/galeri` | Grid 12 foto + filter kategori + lightbox (klik, panah, Escape) |
-| `/kontak` | Kartu kontak, formulir reservasi → WhatsApp, peta OpenStreetMap, FAQ |
+Semua isi ada di satu halaman (`/`). Menu navbar tidak berpindah halaman, tapi
+menggulir halus ke bagian terkait, dan menu yang sedang terlihat disorot otomatis
+(IntersectionObserver + `aria-current`). Section dan anchor-nya:
 
-Tambahan: `sitemap.xml`, `robots.txt`, favicon SVG (`src/app/icon.svg`),
-JSON-LD `Resort` untuk SEO, dan halaman 404 khusus.
+| Anchor | Section | Isi |
+|---|---|---|
+| `#beranda` | Hero | Layar penuh, judul, CTA, rating, penanda gulir |
+| `#tentang` | Tentang | Statistik singkat + profil resort + 3 pilar, dua foto bertumpuk |
+| `#kamar` | Kamar | 5 kartu kamar lengkap harga + daftar "sudah termasuk" |
+| `#fasilitas` | Fasilitas | 4 fasilitas unggulan + kolase foto, 8 kartu fasilitas, layanan tambahan |
+| `#galeri` | Galeri | 12 foto, filter kategori, lightbox (klik, panah, Escape) |
+| `#testimoni` | Testimoni | 3 kutipan tamu |
+| — | CTA | Ajakan reservasi di atas foto |
+| `#kontak` | Kontak | Kartu kontak, formulir reservasi → WhatsApp, peta, FAQ |
+
+Menu didefinisikan di `navLinks` (`src/data/hotel.ts`); menambah section baru
+cukup dengan memberi `id` pada section dan menambah entri di sana. Jarak lompatan
+diatur `section[id] { scroll-margin-top: 5.5rem }` di `globals.css` supaya judul
+tidak tertutup navbar yang fixed.
+
+Tidak ada rute lain — `/kamar`, `/galeri`, dan seterusnya tidak ada (404).
+`not-found.tsx` mengarahkan kembali ke beranda dan ke anchor kamar.
 
 ## Struktur
 
@@ -37,29 +49,33 @@ JSON-LD `Resort` untuk SEO, dan halaman 404 khusus.
 src/
   app/
     layout.tsx          # font, metadata/OG, nav, footer, JSON-LD
-    page.tsx            # beranda
-    kamar|fasilitas|galeri|kontak/page.tsx
-    globals.css         # token warna (@theme), utilitas, animasi reveal
+    page.tsx            # merangkai delapan section jadi satu halaman
+    globals.css         # token warna (@theme), utilitas, animasi reveal, scroll-margin
     sitemap.ts robots.ts not-found.tsx icon.svg
   components/
-    Nav.tsx             # nav transparan di hero, solid setelah scroll, menu mobile
+    Nav.tsx             # anchor + sorot menu aktif; solid setelah scroll; menu mobile
     Footer.tsx          # di-cache ("use cache") karena memakai tahun berjalan
     Gallery.tsx         # grid + filter + lightbox (dirender lewat portal)
     BookingForm.tsx     # validasi HTML + susun pesan WhatsApp
-    RoomCard.tsx PageHero.tsx SectionHeading.tsx Reveal.tsx Icon.tsx
-  data/hotel.ts         # SEMUA konten: identitas, kamar, fasilitas, galeri, testimoni
+    RoomCard.tsx SectionHeading.tsx Reveal.tsx Icon.tsx
+    sections/           # Hero, About, Rooms, Facilities, GallerySection,
+                        # Testimonials, CtaBand, Contact
+  data/hotel.ts         # SEMUA konten: identitas, kamar, fasilitas, galeri, testimoni, navLinks
   assets/images/        # 17 foto (1500px, JPEG)
 public/og.jpg           # gambar preview 1500x833 untuk media sosial
 CREDITS.md              # sumber & lisensi foto
 ```
+
+`Reveal.tsx` membungkus isi section dengan animasi muncul saat masuk viewport
+(menghormati `prefers-reduced-motion`).
 
 ## Mengubah konten
 
 Hampir semua teks dan harga ada di `src/data/hotel.ts`:
 
 - `hotel` — nama, tagline, alamat, telepon, WhatsApp, email, Instagram, jam check-in/out, koordinat & peta.
-- `rooms` — tambah/hapus tipe kamar; `featured: true` menampilkannya di beranda, `badge` mengisi label di sudut foto.
-- `facilities`, `gallery`, `testimonials`, `stats`, `navLinks`.
+- `rooms` — tambah/hapus tipe kamar; `featured: true` dipakai untuk menandai kartu pilihan, `badge` mengisi label di sudut foto.
+- `facilities`, `gallery`, `testimonials`, `stats`, `navLinks`, `roomInclusions`, `extraServices`.
 
 Nomor WhatsApp memakai format internasional tanpa `+` (`6281239008800`).
 

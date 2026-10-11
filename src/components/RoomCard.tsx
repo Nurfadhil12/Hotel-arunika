@@ -62,10 +62,10 @@ export function RoomCard({ room }: { room: Room }) {
 
         <div className="mt-6 flex items-center justify-between gap-4 pt-1">
           <Link
-            href={`/kamar#${room.slug}`}
+            href="#kontak"
             className="link-underline text-[0.72rem] uppercase tracking-[0.22em] text-jade"
           >
-            Detail kamar
+            Cek ketersediaan
             <Icon name="arrow-right" className="h-4 w-4" />
           </Link>
           <a

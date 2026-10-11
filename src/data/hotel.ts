@@ -321,11 +321,32 @@ export const testimonials: Testimonial[] = [
 ];
 
 export const navLinks = [
-  { href: "/", label: "Beranda" },
-  { href: "/kamar", label: "Kamar" },
-  { href: "/fasilitas", label: "Fasilitas" },
-  { href: "/galeri", label: "Galeri" },
-  { href: "/kontak", label: "Kontak" },
+  { href: "#beranda", label: "Beranda" },
+  { href: "#tentang", label: "Tentang" },
+  { href: "#kamar", label: "Kamar" },
+  { href: "#fasilitas", label: "Fasilitas" },
+  { href: "#galeri", label: "Galeri" },
+  { href: "#kontak", label: "Kontak" },
+];
+
+/** Hak yang sudah termasuk di setiap tarif kamar. */
+export const roomInclusions = [
+  { icon: "breakfast" as const, text: "Sarapan à la carte untuk seluruh tamu di kamar" },
+  { icon: "wifi" as const, text: "WiFi fiber 300 Mbps di seluruh area resort" },
+  { icon: "spa" as const, text: "Akses kolam utama, spa pool indoor, dan kelas yoga" },
+  { icon: "shuttle" as const, text: "Shuttle harian ke pusat Ubud setiap dua jam" },
+  { icon: "bell" as const, text: "Concierge 24 jam & layanan kamar sampai pukul 23.00" },
+  { icon: "check-circle" as const, text: "Pembatalan gratis sampai 3 hari sebelum check-in" },
+];
+
+/** Layanan tambahan di luar kamar dan fasilitas utama. */
+export const extraServices = [
+  "Laundry & dry cleaning 24 jam",
+  "Sewa skuter & sepeda",
+  "Kelas memasak masakan Bali",
+  "Penitipan anak (dengan pemesanan)",
+  "Ruang rapat 20 orang",
+  "Paket upacara & bulan madu",
 ];
 
 export function formatRupiah(value: number) {
