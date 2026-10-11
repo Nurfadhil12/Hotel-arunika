@@ -1,26 +1,231 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ---------------------------------------------------------------------------
+   Arunika Resort & Spa — design tokens
+   Palet: hijau hutan (jade/forest) + krem pasir (sand) + kuningan (brass)
+--------------------------------------------------------------------------- */
+@theme {
+  --color-ink: #0f1512;
+  --color-forest: #14251f;
+  --color-jade: #1f4438;
+  --color-jade-soft: #2c5a4a;
+  --color-brass: #b98f52;
+  --color-brass-soft: #d9bc85;
+  --color-sand: #f7f2e8;
+  --color-sand-deep: #ece1cd;
+  --color-line: #ded5c4;
+  --color-stone: #6e7b74;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-cormorant), Georgia, "Times New Roman", serif;
+
+  --shadow-soft: 0 24px 60px -32px rgba(15, 21, 18, 0.45);
+  --shadow-card: 0 18px 40px -28px rgba(15, 21, 18, 0.55);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ---------------------------------- base ---------------------------------- */
+* {
+  min-width: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: var(--color-sand);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-brass);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brass);
+  outline-offset: 3px;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* -------------------------------- utilities ------------------------------- */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--color-brass);
+}
+
+.eyebrow::before {
+  content: "";
+  width: 2rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+.eyebrow-center::after {
+  content: "";
+  width: 2rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+.title-display {
+  font-family: var(--font-display);
+  font-weight: 300;
+  letter-spacing: -0.015em;
+  line-height: 1.06;
+}
+
+.hairline {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--color-line) 18%,
+    var(--color-line) 82%,
+    transparent
+  );
+}
+
+/* --------------------------------- reveal --------------------------------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ------------------------------ micro details ----------------------------- */
+.link-underline {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.link-underline:hover::after {
+  transform: scaleX(1);
+}
+
+.zoom-frame img {
+  transition: transform 1.1s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.zoom-frame:hover img {
+  transform: scale(1.05);
+}
+
+.grain {
+  position: relative;
+}
+
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.07) 1px,
+    transparent 1px
+  );
+  background-size: 4px 4px;
+  mix-blend-mode: overlay;
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-rise {
+  animation: riseIn 1s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade {
+  animation: fadeIn 1.4s ease both;
+}
+
+@keyframes scrollCue {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translateY(7px);
+    opacity: 1;
+  }
+}
+
+.animate-cue {
+  animation: scrollCue 2.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal,
+  .animate-rise,
+  .animate-fade,
+  .animate-cue {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .zoom-frame img {
+    transition: none;
+  }
 }

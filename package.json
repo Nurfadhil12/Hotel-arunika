@@ -1,11 +1,12 @@
 {
-  "name": "hotel-scaffold",
+  "name": "company-profile-hotel",
   "version": "0.1.0",
   "private": true,
+  "description": "Company profile website for Arunika Resort & Spa — Next.js + TypeScript",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3000",
     "lint": "eslint"
   },
   "dependencies": {
