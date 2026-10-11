@@ -32,7 +32,8 @@ export default function HomePage() {
           sizes="100vw"
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/60 via-ink/35 to-ink/85" />
+        <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/40 to-ink/85" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/80 via-ink/35 to-transparent" />
 
         <div className="relative mx-auto w-full max-w-7xl px-5 pt-28 pb-24 sm:px-8">
           <span className="eyebrow animate-fade text-brass-soft">
@@ -217,7 +218,7 @@ export default function HomePage() {
       {/* ----------------------------- FASILITAS ---------------------------- */}
       <section className="grain bg-forest text-sand">
         <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28">
-          <div className="grid gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-20">
+          <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-20">
             <Reveal>
               <SectionHeading
                 eyebrow="Fasilitas"
@@ -260,7 +261,7 @@ export default function HomePage() {
             </Reveal>
 
             <Reveal delay={140} className="grid gap-4 sm:grid-cols-2">
-              <div className="zoom-frame relative aspect-[4/5] overflow-hidden rounded-sm sm:col-span-2">
+              <div className="zoom-frame relative aspect-[3/2] overflow-hidden rounded-sm sm:col-span-2">
                 <Image
                   src={images.poolTerrace}
                   alt="Kolam utama dan terras Arunika menghadap pepohonan"
@@ -269,7 +270,7 @@ export default function HomePage() {
                   className="object-cover"
                 />
               </div>
-              <div className="zoom-frame relative aspect-[4/3] overflow-hidden rounded-sm sm:col-span-2">
+              <div className="zoom-frame relative aspect-[2/1] overflow-hidden rounded-sm sm:col-span-2">
                 <Image
                   src={images.restaurant}
                   alt="Restoran Dapur Nusantara dengan meja bundar"
@@ -300,20 +301,15 @@ export default function HomePage() {
           </Link>
         </Reveal>
 
-        <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="mt-12 grid auto-rows-[150px] grid-cols-2 gap-3 sm:auto-rows-[200px] sm:grid-cols-4">
           {galleryPreview.map((item, index) => (
             <Reveal
               key={`${item.alt}-${index}`}
               delay={index * 70}
               className={index === 0 ? "col-span-2 row-span-2" : ""}
             >
-              <Link href="/galeri" className="block">
-                <div
-                  className={[
-                    "zoom-frame relative overflow-hidden rounded-sm",
-                    index === 0 ? "aspect-square" : "aspect-[4/3]",
-                  ].join(" ")}
-                >
+              <Link href="/galeri" className="block h-full">
+                <div className="zoom-frame relative h-full overflow-hidden rounded-sm">
                   <Image
                     src={item.image}
                     alt={item.alt}

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { Icon } from "@/components/Icon";
 import { gallery, type GalleryItem } from "@/data/hotel";
 
@@ -41,6 +42,8 @@ export function Gallery() {
     return () => window.removeEventListener("keydown", onKey);
   }, [active, close, step]);
 
+  const current = active === null ? null : items[active] ?? null;
+
   return (
     <div>
       <div className="flex flex-wrap items-center gap-2.5">
@@ -64,17 +67,13 @@ export function Gallery() {
         ))}
       </div>
 
-      <div className="mt-8 grid auto-rows-[190px] grid-cols-2 gap-3 sm:auto-rows-[230px] lg:grid-cols-4">
+      <div className="mt-8 grid auto-rows-[160px] grid-cols-2 gap-3 sm:auto-rows-[215px] lg:grid-cols-4">
         {items.map((item, index) => (
           <button
             key={`${item.image.src}-${index}`}
             type="button"
             onClick={() => setActive(index)}
-            className={[
-              "zoom-frame group relative overflow-hidden rounded-sm bg-sand-deep",
-              index % 7 === 0 ? "lg:col-span-2 lg:row-span-2" : "",
-              index % 5 === 3 ? "sm:col-span-2" : "",
-            ].join(" ")}
+            className="zoom-frame group relative h-full overflow-hidden rounded-sm bg-sand-deep"
             aria-label={`Perbesar: ${item.alt}`}
           >
             <Image
@@ -92,61 +91,93 @@ export function Gallery() {
         ))}
       </div>
 
-      {active !== null && items[active] ? (
-        <div
-          className="fixed inset-0 z-[80] flex flex-col bg-ink/95 backdrop-blur-sm animate-fade"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Pratinjau foto"
-        >
-          <div className="flex items-center justify-between px-5 py-4 text-sand sm:px-8">
-            <p className="text-[0.68rem] uppercase tracking-[0.28em] text-sand/70">
-              {items[active].category} · {active + 1}/{items.length}
-            </p>
-            <button
-              type="button"
-              onClick={close}
-              className="grid h-10 w-10 place-items-center rounded-full border border-sand/30 text-sand transition-colors hover:border-brass hover:text-brass-soft"
-              aria-label="Tutup pratinjau"
-            >
-              <Icon name="close" className="h-5 w-5" />
-            </button>
-          </div>
-
-          <div className="relative flex-1">
-            <Image
-              src={items[active].image}
-              alt={items[active].alt}
-              fill
-              sizes="100vw"
-              className="object-contain p-4 sm:p-10"
-              priority
-            />
-          </div>
-
-          <div className="flex items-center justify-between gap-4 px-5 pb-8 sm:px-8">
-            <button
-              type="button"
-              onClick={() => step(-1)}
-              className="flex items-center gap-2 text-[0.68rem] uppercase tracking-[0.24em] text-sand/80 transition-colors hover:text-brass-soft"
-            >
-              <Icon name="arrow-right" className="h-4 w-4 rotate-180" />
-              Sebelumnya
-            </button>
-            <p className="hidden max-w-lg text-center text-sm text-sand/70 sm:block">
-              {items[active].alt}
-            </p>
-            <button
-              type="button"
-              onClick={() => step(1)}
-              className="flex items-center gap-2 text-[0.68rem] uppercase tracking-[0.24em] text-sand/80 transition-colors hover:text-brass-soft"
-            >
-              Berikutnya
-              <Icon name="arrow-right" className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-      ) : null}
+      <Lightbox
+        item={current}
+        index={active}
+        total={items.length}
+        onClose={close}
+        onStep={step}
+      />
     </div>
+  );
+}
+
+/**
+ * Lightbox dirender lewat portal ke document.body.
+ * Leluhurnya memakai `transform` (animasi .reveal) yang akan menahan
+ * position:fixed sehingga overlay tidak menutup viewport kalau dirender di dalam pohon ini.
+ */
+function Lightbox({
+  item,
+  index,
+  total,
+  onClose,
+  onStep,
+}: {
+  item: GalleryItem | null;
+  index: number | null;
+  total: number;
+  onClose: () => void;
+  onStep: (dir: 1 | -1) => void;
+}) {
+  // Tidak perlu penanda "mounted": state `active` selalu null saat render server,
+  // jadi portal hanya mungkin dipanggil di klien.
+  if (!item || index === null || typeof document === "undefined") return null;
+
+  return createPortal(
+    <div
+      className="animate-fade fixed inset-0 z-[80] flex flex-col bg-ink/95 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Pratinjau foto"
+    >
+      <div className="flex items-center justify-between px-5 py-4 text-sand sm:px-8">
+        <p className="text-[0.68rem] uppercase tracking-[0.28em] text-sand/70">
+          {item.category} · {index + 1}/{total}
+        </p>
+        <button
+          type="button"
+          onClick={onClose}
+          className="grid h-10 w-10 place-items-center rounded-full border border-sand/30 text-sand transition-colors hover:border-brass hover:text-brass-soft"
+          aria-label="Tutup pratinjau"
+        >
+          <Icon name="close" className="h-5 w-5" />
+        </button>
+      </div>
+
+      <div className="relative flex-1">
+        <Image
+          src={item.image}
+          alt={item.alt}
+          fill
+          sizes="100vw"
+          className="object-contain p-4 sm:p-10"
+          priority
+        />
+      </div>
+
+      <div className="flex items-center justify-between gap-4 px-5 pb-8 sm:px-8">
+        <button
+          type="button"
+          onClick={() => onStep(-1)}
+          className="flex items-center gap-2 text-[0.68rem] uppercase tracking-[0.24em] text-sand/80 transition-colors hover:text-brass-soft"
+        >
+          <Icon name="arrow-right" className="h-4 w-4 rotate-180" />
+          Sebelumnya
+        </button>
+        <p className="hidden max-w-lg text-center text-sm text-sand/70 sm:block">
+          {item.alt}
+        </p>
+        <button
+          type="button"
+          onClick={() => onStep(1)}
+          className="flex items-center gap-2 text-[0.68rem] uppercase tracking-[0.24em] text-sand/80 transition-colors hover:text-brass-soft"
+        >
+          Berikutnya
+          <Icon name="arrow-right" className="h-4 w-4" />
+        </button>
+      </div>
+    </div>,
+    document.body,
   );
 }

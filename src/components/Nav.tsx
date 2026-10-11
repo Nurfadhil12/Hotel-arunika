@@ -20,17 +20,13 @@ export function Nav() {
   }, []);
 
   useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
   }, [open]);
 
-  const overlay = isHome && !scrolled && !open;
+  const overlay = (isHome && !scrolled) || open;
 
   return (
     <>
@@ -38,7 +34,7 @@ export function Nav() {
         className={[
           "fixed inset-x-0 top-0 z-50 transition-all duration-500",
           scrolled || !isHome
-            ? "border-b border-line/80 bg-sand/90 backdrop-blur-md"
+            ? "border-b border-line/80 bg-sand shadow-[0_1px_24px_-14px_rgba(15,21,18,0.45)]"
             : "border-b border-transparent bg-gradient-to-b from-black/55 to-transparent",
         ].join(" ")}
       >
@@ -154,6 +150,7 @@ export function Nav() {
               <Link
                 key={link.href}
                 href={link.href}
+                onClick={() => setOpen(false)}
                 className="title-display border-b border-sand/15 py-4 text-3xl"
                 style={{
                   transition: "opacity .4s ease, transform .4s ease",

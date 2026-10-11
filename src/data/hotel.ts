@@ -83,6 +83,7 @@ export type Room = {
   description: string;
   features: string[];
   featured?: boolean;
+  badge?: string;
 };
 
 export const rooms: Room[] = [
@@ -126,6 +127,7 @@ export const rooms: Room[] = [
       "Layanan pijat di kamar",
     ],
     featured: true,
+    badge: "Favorit tamu",
   },
   {
     slug: "garden-suite",
@@ -147,6 +149,7 @@ export const rooms: Room[] = [
       "Jamuan sore (tea time) harian",
     ],
     featured: true,
+    badge: "Untuk keluarga",
   },
   {
     slug: "canopy-suite",
@@ -188,6 +191,7 @@ export const rooms: Room[] = [
       "Mobil dengan sopir 8 jam/hari",
     ],
     featured: true,
+    badge: "Vila privat",
   },
 ];
 

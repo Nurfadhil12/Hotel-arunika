@@ -15,9 +15,9 @@ export function RoomCard({ room }: { room: Room }) {
           className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/45 via-transparent to-transparent" />
-        {room.featured ? (
+        {room.badge ? (
           <span className="absolute left-4 top-4 rounded-full bg-sand/95 px-3 py-1 text-[0.6rem] uppercase tracking-[0.24em] text-jade">
-            Favorit tamu
+            {room.badge}
           </span>
         ) : null}
         <p className="absolute bottom-4 left-4 text-sand">

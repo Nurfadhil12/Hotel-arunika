@@ -148,7 +148,7 @@ export function BookingForm() {
         </p>
         <button
           type="submit"
-          className="inline-flex items-center justify-center gap-2 rounded-full bg-jade px-7 py-3.5 text-[0.72rem] uppercase tracking-[0.24em] text-sand transition-colors hover:bg-forest"
+          className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-jade px-7 py-3.5 text-[0.72rem] uppercase tracking-[0.24em] text-sand transition-colors hover:bg-forest"
         >
           <Icon name="whatsapp" className="h-4 w-4" />
           Kirim permintaan
